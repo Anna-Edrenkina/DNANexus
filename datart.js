@@ -5,39 +5,45 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   return false
 })
 
+Cypress.Commands.add('addTVtoCart', (position) => {
+  cy.get('.item-cart').eq(position).click()
+})
+
+Cypress.Commands.add('closeCartDialog', () => {
+  cy.get('.close').should('be.visible').click()
+})
+
 describe('Datart test', () => {
-    it('Visit Datart', () => {
-      // Visit the datart web site main screen
+    it('Add two the most expensive TVs into shopping cart', () => {
+
       cy.visit('https://www.datart.cz')
 
-      // Click "Souhlasim" in cookie settings window
-      cy.contains('Souhlasím').click()
+      // Approve cookies
+      cy.get('button[id="c-p-bn"]').click()
 
-      // Choose the first category "Televize, audio a video" in main cataloge.
       cy.get('.link-name').contains('Televize').click()
-
-      // Choose "Televize" category and click on it  
+ 
       cy.get('.category-tree-title').contains('Televize').click()
 
-      // Filter the TV list by price, where the most expensive are at the top
       cy.get('.sort-panel-select').select(3).should('have.value', '4')
 
-      // Wait until TV list is visible
       cy.url().should('contain', '/filter')
 
-      // Choose the first TV in the list, click on button "Vlozit do kosiku".
-      cy.get('.item-cart').eq(0).click()
+      // Selecting only avaivable TVs
+      cy.get('input[type="checkbox"]').check('1')
 
-      // Wait until close button is visible and click on it.
-      cy.get('.close').should('be.visible').click()
+      // Waiting for "Dostupnost" filter to be applied
+      cy.url().should('contain', '/v:-')
 
-      // Choose the second TV in the list, click on button "Vlozit do kosiku"
-      cy.get('.item-cart').eq(1).click()
+      // Using function for selecting TV
+      cy.addTVtoCart(0)
 
-      // Wait until close button is visible and click on it.
-      cy.get('.close').should('be.visible').click()
-              
-    
+      // Using function for closing the cart dialog which appears after adding TV into shopping cart
+      cy.closeCartDialog()
+
+      cy.addTVtoCart(1)
+
+      cy.closeCartDialog()
     })   
 })
        
