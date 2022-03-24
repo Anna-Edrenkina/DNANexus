@@ -18,7 +18,6 @@ describe('Datart test', () => {
 
       cy.visit('https://www.datart.cz')
 
-      // Approve cookies
       cy.get('button[id="c-p-bn"]').click()
 
       cy.get('.link-name').contains('Televize').click()
@@ -29,7 +28,6 @@ describe('Datart test', () => {
 
       cy.url().should('contain', '/filter')
 
-      // Selecting only avaivable TVs
       cy.get('input[type="checkbox"]').check('1')
 
       // Waiting for "Dostupnost" filter to be applied
